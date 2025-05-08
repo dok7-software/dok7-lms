@@ -37,7 +37,6 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
     category: '',
     instructor: '',
   });
-  const [touched, setTouched] = useState<{[k: string]: boolean}>({});
 
   useEffect(() => {
     if (initialValues) {
@@ -54,10 +53,6 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setTouched(t => ({ ...t, [e.target.name]: true }));
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
@@ -65,7 +60,6 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
       setForm({
         title: '', description: '', image: '', participants: '', modules: '', startDate: '', endDate: '', status: '', category: '', instructor: ''
       });
-      setTouched({});
     }
   };
 
@@ -78,8 +72,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             id="title" 
             name="title" 
             value={form.title} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required 
             placeholder="Título del curso" 
             className="h-9"
@@ -91,8 +84,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             id="instructor" 
             name="instructor" 
             value={form.instructor} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required 
             placeholder="Nombre del instructor"
             className="h-9"
@@ -104,8 +96,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             id="description" 
             name="description" 
             value={form.description} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required 
             placeholder="Breve descripción del curso" 
             rows={3}
@@ -118,8 +109,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             id="image" 
             name="image" 
             value={form.image} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required 
             placeholder="https://..."
             className="h-9"
@@ -131,8 +121,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             id="category" 
             name="category" 
             value={form.category} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required 
             placeholder="Ej: Programación"
             className="h-9"
@@ -146,8 +135,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             type="number" 
             min={1} 
             value={form.participants} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required 
             placeholder="Ej: 50"
             className="h-9"
@@ -161,8 +149,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             type="number" 
             min={1} 
             value={form.modules} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required 
             placeholder="Ej: 8"
             className="h-9"
@@ -175,8 +162,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             name="startDate" 
             type="date" 
             value={form.startDate} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required
             className="h-9"
           />
@@ -188,8 +174,7 @@ export default function CreateCourseForm({ onSubmit, onCancel, initialValues }: 
             name="endDate" 
             type="date" 
             value={form.endDate} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+            onChange={handleChange}
             required
             className="h-9"
           />

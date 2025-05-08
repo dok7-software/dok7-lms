@@ -29,6 +29,7 @@ import { Route as AuthenticatedTasksIndexImport } from './routes/_authenticated/
 import { Route as AuthenticatedSettingsIndexImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedHelpCenterIndexImport } from './routes/_authenticated/help-center/index'
 import { Route as AuthenticatedCoursesIndexImport } from './routes/_authenticated/courses/index'
+import { Route as AuthenticatedCourseTemplatesIndexImport } from './routes/_authenticated/course-templates/index'
 import { Route as AuthenticatedChatsIndexImport } from './routes/_authenticated/chats/index'
 import { Route as AuthenticatedAppsIndexImport } from './routes/_authenticated/apps/index'
 import { Route as AuthenticatedSettingsNotificationsImport } from './routes/_authenticated/settings/notifications'
@@ -36,6 +37,7 @@ import { Route as AuthenticatedSettingsDisplayImport } from './routes/_authentic
 import { Route as AuthenticatedSettingsAppearanceImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedCoursesCourseIdImport } from './routes/_authenticated/courses/$courseId'
+import { Route as AuthenticatedCourseTemplatesTemplateIdImport } from './routes/_authenticated/course-templates/$templateId'
 
 // Create/Update Routes
 
@@ -151,6 +153,13 @@ const AuthenticatedCoursesIndexRoute = AuthenticatedCoursesIndexImport.update({
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
+const AuthenticatedCourseTemplatesIndexRoute =
+  AuthenticatedCourseTemplatesIndexImport.update({
+    id: '/course-templates/',
+    path: '/course-templates/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
 const AuthenticatedChatsIndexRoute = AuthenticatedChatsIndexImport.update({
   id: '/chats/',
   path: '/chats/',
@@ -195,6 +204,13 @@ const AuthenticatedCoursesCourseIdRoute =
   AuthenticatedCoursesCourseIdImport.update({
     id: '/courses/$courseId',
     path: '/courses/$courseId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedCourseTemplatesTemplateIdRoute =
+  AuthenticatedCourseTemplatesTemplateIdImport.update({
+    id: '/course-templates/$templateId',
+    path: '/course-templates/$templateId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -293,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/course-templates/$templateId': {
+      id: '/_authenticated/course-templates/$templateId'
+      path: '/course-templates/$templateId'
+      fullPath: '/course-templates/$templateId'
+      preLoaderRoute: typeof AuthenticatedCourseTemplatesTemplateIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/courses/$courseId': {
       id: '/_authenticated/courses/$courseId'
       path: '/courses/$courseId'
@@ -340,6 +363,13 @@ declare module '@tanstack/react-router' {
       path: '/chats'
       fullPath: '/chats'
       preLoaderRoute: typeof AuthenticatedChatsIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/course-templates/': {
+      id: '/_authenticated/course-templates/'
+      path: '/course-templates'
+      fullPath: '/course-templates'
+      preLoaderRoute: typeof AuthenticatedCourseTemplatesIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/courses/': {
@@ -408,9 +438,11 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedCourseTemplatesTemplateIdRoute: typeof AuthenticatedCourseTemplatesTemplateIdRoute
   AuthenticatedCoursesCourseIdRoute: typeof AuthenticatedCoursesCourseIdRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedChatsIndexRoute: typeof AuthenticatedChatsIndexRoute
+  AuthenticatedCourseTemplatesIndexRoute: typeof AuthenticatedCourseTemplatesIndexRoute
   AuthenticatedCoursesIndexRoute: typeof AuthenticatedCoursesIndexRoute
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
@@ -420,9 +452,13 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedCourseTemplatesTemplateIdRoute:
+    AuthenticatedCourseTemplatesTemplateIdRoute,
   AuthenticatedCoursesCourseIdRoute: AuthenticatedCoursesCourseIdRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedChatsIndexRoute: AuthenticatedChatsIndexRoute,
+  AuthenticatedCourseTemplatesIndexRoute:
+    AuthenticatedCourseTemplatesIndexRoute,
   AuthenticatedCoursesIndexRoute: AuthenticatedCoursesIndexRoute,
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
@@ -446,6 +482,7 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
+  '/course-templates/$templateId': typeof AuthenticatedCourseTemplatesTemplateIdRoute
   '/courses/$courseId': typeof AuthenticatedCoursesCourseIdRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -453,6 +490,7 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
+  '/course-templates': typeof AuthenticatedCourseTemplatesIndexRoute
   '/courses': typeof AuthenticatedCoursesIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
@@ -472,6 +510,7 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
+  '/course-templates/$templateId': typeof AuthenticatedCourseTemplatesTemplateIdRoute
   '/courses/$courseId': typeof AuthenticatedCoursesCourseIdRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -479,6 +518,7 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
+  '/course-templates': typeof AuthenticatedCourseTemplatesIndexRoute
   '/courses': typeof AuthenticatedCoursesIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
@@ -501,6 +541,7 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/course-templates/$templateId': typeof AuthenticatedCourseTemplatesTemplateIdRoute
   '/_authenticated/courses/$courseId': typeof AuthenticatedCoursesCourseIdRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -508,6 +549,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/chats/': typeof AuthenticatedChatsIndexRoute
+  '/_authenticated/course-templates/': typeof AuthenticatedCourseTemplatesIndexRoute
   '/_authenticated/courses/': typeof AuthenticatedCoursesIndexRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
@@ -531,6 +573,7 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/course-templates/$templateId'
     | '/courses/$courseId'
     | '/settings/account'
     | '/settings/appearance'
@@ -538,6 +581,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/apps'
     | '/chats'
+    | '/course-templates'
     | '/courses'
     | '/help-center'
     | '/settings/'
@@ -556,6 +600,7 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/course-templates/$templateId'
     | '/courses/$courseId'
     | '/settings/account'
     | '/settings/appearance'
@@ -563,6 +608,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/apps'
     | '/chats'
+    | '/course-templates'
     | '/courses'
     | '/help-center'
     | '/settings'
@@ -583,6 +629,7 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/'
+    | '/_authenticated/course-templates/$templateId'
     | '/_authenticated/courses/$courseId'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
@@ -590,6 +637,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/notifications'
     | '/_authenticated/apps/'
     | '/_authenticated/chats/'
+    | '/_authenticated/course-templates/'
     | '/_authenticated/courses/'
     | '/_authenticated/help-center/'
     | '/_authenticated/settings/'
@@ -630,3 +678,142 @@ export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/_authenticated",
+        "/(auth)/forgot-password",
+        "/(auth)/otp",
+        "/(auth)/sign-in",
+        "/(auth)/sign-in-2",
+        "/(auth)/sign-up",
+        "/(errors)/401",
+        "/(errors)/403",
+        "/(errors)/404",
+        "/(errors)/500",
+        "/(errors)/503"
+      ]
+    },
+    "/_authenticated": {
+      "filePath": "_authenticated/route.tsx",
+      "children": [
+        "/_authenticated/settings",
+        "/_authenticated/",
+        "/_authenticated/course-templates/$templateId",
+        "/_authenticated/courses/$courseId",
+        "/_authenticated/apps/",
+        "/_authenticated/chats/",
+        "/_authenticated/course-templates/",
+        "/_authenticated/courses/",
+        "/_authenticated/help-center/",
+        "/_authenticated/tasks/",
+        "/_authenticated/users/"
+      ]
+    },
+    "/_authenticated/settings": {
+      "filePath": "_authenticated/settings/route.tsx",
+      "parent": "/_authenticated",
+      "children": [
+        "/_authenticated/settings/account",
+        "/_authenticated/settings/appearance",
+        "/_authenticated/settings/display",
+        "/_authenticated/settings/notifications",
+        "/_authenticated/settings/"
+      ]
+    },
+    "/(auth)/forgot-password": {
+      "filePath": "(auth)/forgot-password.tsx"
+    },
+    "/(auth)/otp": {
+      "filePath": "(auth)/otp.tsx"
+    },
+    "/(auth)/sign-in": {
+      "filePath": "(auth)/sign-in.tsx"
+    },
+    "/(auth)/sign-in-2": {
+      "filePath": "(auth)/sign-in-2.tsx"
+    },
+    "/(auth)/sign-up": {
+      "filePath": "(auth)/sign-up.tsx"
+    },
+    "/(errors)/401": {
+      "filePath": "(errors)/401.tsx"
+    },
+    "/(errors)/403": {
+      "filePath": "(errors)/403.tsx"
+    },
+    "/(errors)/404": {
+      "filePath": "(errors)/404.tsx"
+    },
+    "/(errors)/500": {
+      "filePath": "(errors)/500.tsx"
+    },
+    "/(errors)/503": {
+      "filePath": "(errors)/503.tsx"
+    },
+    "/_authenticated/": {
+      "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/course-templates/$templateId": {
+      "filePath": "_authenticated/course-templates/$templateId.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/courses/$courseId": {
+      "filePath": "_authenticated/courses/$courseId.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/settings/account": {
+      "filePath": "_authenticated/settings/account.tsx",
+      "parent": "/_authenticated/settings"
+    },
+    "/_authenticated/settings/appearance": {
+      "filePath": "_authenticated/settings/appearance.tsx",
+      "parent": "/_authenticated/settings"
+    },
+    "/_authenticated/settings/display": {
+      "filePath": "_authenticated/settings/display.tsx",
+      "parent": "/_authenticated/settings"
+    },
+    "/_authenticated/settings/notifications": {
+      "filePath": "_authenticated/settings/notifications.tsx",
+      "parent": "/_authenticated/settings"
+    },
+    "/_authenticated/apps/": {
+      "filePath": "_authenticated/apps/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/chats/": {
+      "filePath": "_authenticated/chats/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/course-templates/": {
+      "filePath": "_authenticated/course-templates/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/courses/": {
+      "filePath": "_authenticated/courses/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/help-center/": {
+      "filePath": "_authenticated/help-center/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/settings/": {
+      "filePath": "_authenticated/settings/index.tsx",
+      "parent": "/_authenticated/settings"
+    },
+    "/_authenticated/tasks/": {
+      "filePath": "_authenticated/tasks/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/users/": {
+      "filePath": "_authenticated/users/index.tsx",
+      "parent": "/_authenticated"
+    }
+  }
+}
+ROUTE_MANIFEST_END */

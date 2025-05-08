@@ -22,9 +22,9 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { CourseCard, Course } from '@/features/courses/components/course-card'
-import { mockCourses } from '@/features/courses/data/mock-courses'
-import CreateCourseForm from './components/course-form'
+import { TemplateCard, Template } from './components/template-card'
+import { mockTemplates } from './data/mock-templates'
+import CreateTemplateForm from '@/features/course-templates/components/template-form'
 import {
   Dialog,
   DialogContent,
@@ -35,45 +35,41 @@ import {
 } from '@/components/ui/dialog'
 import { useNavigate } from '@tanstack/react-router'
 
-const estados = ['abierto', 'en progreso', 'cerrado']
 const categorias = Array.from(
-  new Set(mockCourses.map((c) => c.category).filter(Boolean))
+  new Set(mockTemplates.map((t) => t.category).filter(Boolean))
 )
 
-export default function Courses() {
-  const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [selectedStatus, setSelectedStatus] = useState<string>('')
-  const [isAddCourseOpen, setIsAddCourseOpen] = useState(false)
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null)
-
+export default function TemplateList() {
+  const [search, setSearch] = useState('')
+  const [categoria, setCategoria] = useState('')
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(8)
-  const [courses, setCourses] = useState(mockCourses)
+  const [templates, setTemplates] = useState(mockTemplates)
+  const [open, setOpen] = useState(false)
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
+  const [deleteTemplate, setDeleteTemplate] = useState<Template | null>(null)
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
+
+  const navigate = useNavigate()
 
   // Filtrado y búsqueda
-  const filteredCourses = useMemo(() => {
-    return courses.filter((course) => {
+  const filteredTemplates = useMemo(() => {
+    return templates.filter((template) => {
       const matchesSearch = [
-        course.title,
-        course.instructor,
-        course.description,
+        template.title,
+        template.description,
       ]
         .filter(Boolean)
-        .some((field) => field!.toLowerCase().includes(searchQuery.toLowerCase()))
-      const matchesEstado = selectedStatus ? course.status === selectedStatus : true
-      const matchesCategoria = selectedCategory ? course.category === selectedCategory : true
-      return matchesSearch && matchesEstado && matchesCategoria
+        .some((field) => field!.toLowerCase().includes(search.toLowerCase()))
+      const matchesCategoria = categoria ? template.category === categoria : true
+      return matchesSearch && matchesCategoria
     })
-  }, [searchQuery, selectedStatus, selectedCategory, courses])
+  }, [search, categoria, templates])
 
   // Paginación
-  const total = filteredCourses.length
+  const total = filteredTemplates.length
   const totalPages = Math.ceil(total / perPage) || 1
-  const paginatedCourses = filteredCourses.slice(
+  const paginatedTemplates = filteredTemplates.slice(
     (page - 1) * perPage,
     page * perPage
   )
@@ -81,47 +77,43 @@ export default function Courses() {
   // Resetear página al cambiar filtros
   useEffect(() => {
     setPage(1)
-  }, [searchQuery, selectedStatus, selectedCategory, perPage])
+  }, [search, categoria, perPage])
 
-  const handleViewDetail = (course: Course) => {
-    navigate({ to: `/courses/${course.id}` })
+  const handleViewDetail = (template: Template) => {
+    navigate({ to: `/course-templates/${template.id}` })
   }
 
-  const handleEdit = (course: Course) => {
-    setSelectedCourse(course)
-    setIsAddCourseOpen(true)
+  const handleEdit = (template: Template) => {
+    setEditingTemplate(template)
+    setOpen(true)
   }
 
   const handleSubmit = (data: any) => {
-    if (selectedCourse) {
-      setCourses((prev) =>
-        prev.map((c) => (c.id === selectedCourse.id ? { ...selectedCourse, ...data } : c))
+    if (editingTemplate) {
+      setTemplates((prev) =>
+        prev.map((t) => (t.id === editingTemplate.id ? { ...editingTemplate, ...data } : t))
       )
     } else {
-      setCourses((prev) => [
+      setTemplates((prev) => [
         {
           id: Date.now().toString(),
           image: data.image,
           title: data.title,
           description: data.description,
-          participants: Number(data.participants),
           modules: Number(data.modules),
-          startDate: data.startDate,
-          endDate: data.endDate,
-          status: data.status as any,
           category: data.category,
-          instructor: data.instructor,
+          estimatedTime: data.estimatedTime,
         },
         ...prev,
       ])
     }
-    setIsAddCourseOpen(false)
-    setSelectedCourse(null)
+    setOpen(false)
+    setEditingTemplate(null)
   }
 
-  const handleDelete = (course: Course) => {
-    setCourseToDelete(course)
-    setIsDeleteDialogOpen(true)
+  const handleDelete = (template: Template) => {
+    setDeleteTemplate(template)
+    setDeleteDialogOpen(true)
   }
 
   return (
@@ -138,46 +130,42 @@ export default function Courses() {
       <Main>
         <div>
           <h1 className='text-2xl font-bold tracking-tight'>
-            Cursos disponibles
+            Plantillas de cursos
           </h1>
           <p className='text-muted-foreground'>
-            Explora nuestra oferta de cursos y encuentra el que mejor se adapte
+            Explora nuestra colección de plantillas de cursos y encuentra la que mejor se adapte
             a tus necesidades.
           </p>
         </div>
         <div className="my-4 flex flex-col gap-4 sm:my-4 sm:flex-row sm:items-end sm:justify-between">
-          {/* Izquierda: Botón Crear curso */}
+          {/* Izquierda: Botón Crear plantilla */}
           <div>
-            <Sheet open={isAddCourseOpen} onOpenChange={setIsAddCourseOpen}>
+            <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button variant='default' className='h-9'>
-                  {selectedCourse ? 'Editar curso' : 'Crear curso'}
+                  Crear plantilla
                 </Button>
               </SheetTrigger>
               <SheetContent side='right'>
                 <SheetHeader>
-                  <SheetTitle>{selectedCourse ? 'Editar curso' : 'Crear nuevo curso'}</SheetTitle>
+                  <SheetTitle>Crear nueva plantilla</SheetTitle>
                   <SheetDescription>
-                    {selectedCourse ? 'Modifica los datos del curso.' : 'Completa los datos para crear un nuevo curso.'}
+                    Completa los datos para crear una nueva plantilla de curso.
                   </SheetDescription>
                 </SheetHeader>
-                <CreateCourseForm
+                <CreateTemplateForm
                   onSubmit={handleSubmit}
                   onCancel={() => {
-                    setIsAddCourseOpen(false)
-                    setSelectedCourse(null)
+                    setOpen(false)
+                    setEditingTemplate(null)
                   }}
-                  initialValues={selectedCourse ? {
-                    title: selectedCourse.title,
-                    description: selectedCourse.description,
-                    image: selectedCourse.image,
-                    participants: String(selectedCourse.participants),
-                    modules: String(selectedCourse.modules),
-                    startDate: selectedCourse.startDate,
-                    endDate: selectedCourse.endDate,
-                    status: selectedCourse.status,
-                    category: selectedCourse.category,
-                    instructor: selectedCourse.instructor,
+                  initialValues={editingTemplate ? {
+                    title: editingTemplate.title,
+                    description: editingTemplate.description,
+                    image: editingTemplate.image,
+                    modules: String(editingTemplate.modules),
+                    category: editingTemplate.category,
+                    estimatedTime: editingTemplate.estimatedTime,
                   } : undefined}
                 />
               </SheetContent>
@@ -188,32 +176,16 @@ export default function Courses() {
             <Input
               placeholder='Buscar'
               className='h-9 w-40 lg:w-[250px]'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <Select
-              value={selectedStatus || 'all'}
-              onValueChange={(v) => setSelectedStatus(v === 'all' ? '' : v)}
-            >
-              <SelectTrigger className='w-50 h-9'>
-                <SelectValue>{selectedStatus ? selectedStatus : 'Todos los estados'}</SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='all'>Todos los estados</SelectItem>
-                {estados.map((e) => (
-                  <SelectItem key={e} value={e}>
-                    {e}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={selectedCategory || 'all'}
-              onValueChange={(v) => setSelectedCategory(v === 'all' ? '' : v)}
+              value={categoria || 'all'}
+              onValueChange={(v) => setCategoria(v === 'all' ? '' : v)}
             >
               <SelectTrigger className='w-50 h-9'>
                 <SelectValue>
-                  {selectedCategory ? selectedCategory : 'Todas las categorías'}
+                  {categoria ? categoria : 'Todas las categorías'}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -231,9 +203,8 @@ export default function Courses() {
               variant='outline'
               className='h-9'
               onClick={() => {
-                setSearchQuery('')
-                setSelectedStatus('')
-                setSelectedCategory('')
+                setSearch('')
+                setCategoria('')
               }}
             >
               Limpiar filtros
@@ -242,10 +213,10 @@ export default function Courses() {
         </div>
         <Separator className='shadow-sm' />
         <ul className='no-scrollbar grid grid-cols-1 gap-4 overflow-auto pt-4 pb-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-          {paginatedCourses.map((course: Course) => (
-            <li key={course.id}>
-              <CourseCard 
-                course={course} 
+          {paginatedTemplates.map((template: Template) => (
+            <li key={template.id}>
+              <TemplateCard 
+                template={template} 
                 onViewDetail={handleViewDetail} 
                 onEdit={handleEdit} 
                 onDelete={handleDelete} 
@@ -256,11 +227,11 @@ export default function Courses() {
         <div className='mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
           {/* Texto a la izquierda */}
           <span className='text-muted-foreground text-xs'>
-            Mostrando {paginatedCourses.length} de {total} cursos encontrados
+            Mostrando {paginatedTemplates.length} de {total} plantillas encontradas
           </span>
           {/* Paginador a la derecha */}
           <div className='flex items-center gap-2'>
-            <span className='text-sm'>Cursos por página</span>
+            <span className='text-sm'>Plantillas por página</span>
             <Select
               value={String(perPage)}
               onValueChange={(v) => setPerPage(Number(v))}
@@ -314,26 +285,26 @@ export default function Courses() {
           </div>
         </div>
       </Main>
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirmar eliminación</DialogTitle>
             <DialogDescription>
-              ¿Estás seguro de que deseas eliminar el curso "{courseToDelete?.title}"? Esta acción no se puede deshacer.
+              ¿Estás seguro de que deseas eliminar la plantilla "{deleteTemplate?.title}"? Esta acción no se puede deshacer.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end space-x-4">
             <DialogClose asChild>
-              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
                 Cancelar
               </Button>
             </DialogClose>
             <Button
               variant="destructive"
               onClick={() => {
-                setCourses((prev) => prev.filter((c) => c.id !== courseToDelete?.id));
-                setIsDeleteDialogOpen(false);
-                setCourseToDelete(null);
+                setTemplates((prev) => prev.filter((t) => t.id !== deleteTemplate?.id));
+                setDeleteDialogOpen(false);
+                setDeleteTemplate(null);
               }}
             >
               Eliminar
@@ -343,4 +314,4 @@ export default function Courses() {
       </Dialog>
     </>
   )
-}
+} 

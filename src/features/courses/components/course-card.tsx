@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { MoreVertical } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export interface CourseContent {
   id: string;
@@ -96,6 +97,13 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onViewDetail, on
         </div>
         <div className="flex-1 flex flex-col justify-end">
           {course.instructor && <div className="text-xs text-muted-foreground mb-2 min-h-[20px]">👨‍🏫 Instructor: {course.instructor}</div>}
+          <Button 
+            variant="default" 
+            className="w-full bg-black text-white hover:bg-black/90 mt-2"
+            onClick={() => onViewDetail && onViewDetail(course)}
+          >
+            Ver curso
+          </Button>
         </div>
       </div>
     </div>
